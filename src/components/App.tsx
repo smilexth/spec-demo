@@ -84,15 +84,15 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   )
 }
 
+import TodoApp from './TodoApp'
+
 export default function App() {
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-200">
-        {/* TodoApp will be rendered here */}
         <div className="flex items-center justify-center min-h-screen p-4">
           <div className="w-full max-w-md">
-            <h1 className="text-2xl font-bold text-center mb-8">FocusFlow Todo</h1>
-            <p className="text-center text-slate-500 dark:text-slate-400">Loading...</p>
+            <TodoApp />
           </div>
         </div>
       </div>
