@@ -33,17 +33,24 @@ export function getTasks(): Task[] | null {
   }
 }
 
-export function saveTasks(tasks: Task[]): boolean {
+export function saveTasks(tasks: Task[]): { success: boolean; error?: 'quota_exceeded' | 'disabled' } {
   if (!isLocalStorageAvailable()) {
-    return false;
+    return { success: false, error: 'disabled' };
   }
 
   try {
     localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
-    return true;
+    return { success: true };
   } catch (error) {
+    // Check if it's a quota exceeded error
+    if (error instanceof DOMException && (
+      error.name === 'QuotaExceededError' ||
+      error.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+    )) {
+      return { success: false, error: 'quota_exceeded' };
+    }
     console.error('Failed to save tasks:', error);
-    return false;
+    return { success: false, error: 'disabled' };
   }
 }
 
