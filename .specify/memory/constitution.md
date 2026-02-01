@@ -1,50 +1,101 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+- Version change: [none] → 1.0.0 (initial ratification)
+- Added sections: All 5 principles, Technology Standards, Development Workflow, Governance
+- Templates requiring updates:
+  - ✅ .specify/templates/plan-template.md (Constitution Check section aligns)
+  - ✅ .specify/templates/spec-template.md (requirements structure compatible)
+  - ✅ .specify/templates/tasks-template.md (task categorization compatible)
+  - ✅ .specify/templates/agent-file-template.md (no agent-specific references)
+  - ✅ .claude/commands/speckit.constitution.md (no agent-specific references)
+- Follow-up TODOs: None
+-->
+
+# TodoApp Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Component-First Architecture
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Every feature MUST be implemented as reusable React components. Components MUST be self-contained with their own state, logic, and styling. Each component MUST have a single, clear responsibility and MUST be independently testable. Component composition is preferred over complex inheritance.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+**Rationale**: React's component model enables code reuse, isolation of concerns, and easier testing. Single-responsibility components are simpler to understand, maintain, and debug.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Utility-First Styling
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+All styling MUST use Tailwind CSS utility classes. Custom CSS MUST only be used for animations or highly specialized visual effects not achievable with Tailwind. Design tokens MUST align with Tailwind's configuration (spacing, colors, typography). All styles MUST be responsive by default.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+**Rationale**: Tailwind promotes consistent design, reduces custom CSS bloat, and enables rapid prototyping. Utility classes create a visual design system that enforces consistency across the application.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### III. Modern Build Standards
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+All code MUST leverage Vite's build tooling for fast development and optimized production bundles. Build configurations MUST use environment variables for any environment-specific values. Hot Module Replacement (HMR) MUST be maintained for optimal developer experience. Production builds MUST be optimized for minimal bundle size and fast load times.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+**Rationale**: Vite provides instant server start and lightning-fast HMR, enabling rapid iteration. Optimized production builds ensure the best possible user experience with minimal load times.
+
+### IV. User Experience Excellence
+
+The application MUST provide immediate visual feedback for all user interactions. All operations MUST handle loading states, error states, and empty states gracefully. Keyboard navigation MUST be fully supported. Data persistence MUST be transparent to users with automatic saving.
+
+**Rationale**: A to-do app lives or dies by its responsiveness and clarity. Users expect instant feedback and must never wonder if their action was registered. Good UX reduces user frustration and increases trust.
+
+### V. Simplicity & Maintainability
+
+Features MUST be implemented using the simplest solution that meets requirements. YAGNI (You Aren't Gonna Need It) MUST be strictly enforced—no premature abstraction or features for hypothetical future needs. Code MUST be self-documenting with clear naming; comments MUST only explain "why," not "what."
+
+**Rationale**: A to-do app should remain maintainable as it grows. Premature complexity creates technical debt that slows development. Simple code is easier to debug, modify, and extend.
+
+## Technology Standards
+
+### Mandatory Technology Stack
+
+- **Frontend Framework**: React 18+ with hooks
+- **Styling**: Tailwind CSS 3+
+- **Build Tool**: Vite 5+
+- **Language**: TypeScript (preferred) or modern JavaScript (ES2022+)
+- **State Management**: React Context API or useState/useReducer (no external state libraries unless justified)
+- **Storage**: localStorage for client-side persistence (backend to be specified if needed)
+
+### Technology Constraints
+
+- No class components unless specifically required by a third-party library
+- No CSS-in-JS libraries (use Tailwind utilities)
+- No additional build plugins without justification
+- No external component libraries unless specifically approved
+
+## Development Workflow
+
+### Code Quality Standards
+
+- All components MUST have proper TypeScript types or PropTypes
+- All user-facing features MUST be tested manually before commit
+- Code MUST be formatted with Prettier (or equivalent)
+- Linting MUST pass before commits
+
+### Git & Version Control
+
+- Feature branches MUST follow naming convention: `[###-feature-name]`
+- Commits MUST be atomic and follow conventional commit format
+- Pull requests MUST reference related issues or specifications
+
+### Testing Philosophy
+
+Tests are OPTIONAL unless explicitly required by feature specification. When tests are required, they MUST follow React Testing Library patterns focusing on user behavior rather than implementation details.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### Amendment Procedure
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+This constitution governs all development practices for the TodoApp project. It supersedes conflicting practices or conventions.
+
+Amendments require:
+1. Documented rationale for the change
+2. Review against existing principles
+3. Version bump according to semantic versioning
+4. Update to all dependent templates to ensure consistency
+
+### Compliance Review
+
+All specifications, plans, and tasks MUST pass a constitution check before implementation begins. Any violation of core principles MUST be explicitly justified in the plan with a simpler alternative considered and rejected.
+
+**Version**: 1.0.0 | **Ratified**: 2026-02-01 | **Last Amended**: 2026-02-01
