@@ -4,9 +4,10 @@ import { useLocalStorage } from './hooks/useLocalStorage'
 import { useTheme } from './App'
 import TodoInput from './TodoInput'
 import TodoList from './TodoList'
+import FilterTabs from './FilterTabs'
 import ErrorToast from './ErrorToast'
-import { saveTasks } from '@/lib/storage'
-import type { Task } from '@/lib/types'
+import { saveTasks, getFilter, saveFilter } from '@/lib/storage'
+import type { Task, TaskFilter } from '@/lib/types'
 
 type StorageError = { type: 'quota_exceeded' | 'disabled'; message: string } | null
 
@@ -21,25 +22,44 @@ export default function TodoApp() {
   // Load tasks from localStorage on mount
   const storedTasks = useLocalStorage<Task[]>('focusflow-tasks', [])
 
+  // Load filter from localStorage on mount
+  const initialFilter = getFilter()
+  const storedFilter = useLocalStorage<TaskFilter>('focusflow-filter', initialFilter)
+
   // Todo state management
-  const { tasks, addTask, toggleTask, deleteTask } = useTodos(storedTasks[0])
+  const { filteredTasks, filter, setFilter, addTask, toggleTask, deleteTask, activeCount, completedCount } = useTodos(
+    storedTasks[0],
+    storedFilter[0]
+  )
 
   // Auto-save tasks to localStorage when they change
-  const [, setStoredTasks] = useLocalStorage<Task[]>('focusflow-tasks', tasks)
+  const [, setStoredTasks] = useLocalStorage<Task[]>('focusflow-tasks', filteredTasks)
+  const [, setStoredFilter] = useLocalStorage<TaskFilter>('focusflow-filter', filter)
 
   // Save tasks whenever they change using enhanced storage
   useEffect(() => {
-    if (JSON.stringify(tasks) !== JSON.stringify(storedTasks[0])) {
-      const result = saveTasks(tasks)
+    const allTasks = storedTasks[0]
+    if (JSON.stringify(allTasks) !== JSON.stringify(filteredTasks)) {
+      const result = saveTasks(allTasks)
       if (!result.success && result.error) {
         setStorageError({ type: result.error, message: ERROR_MESSAGES[result.error] })
       }
-      setStoredTasks(tasks)
+      setStoredTasks(allTasks)
     }
-  }, [tasks, storedTasks, setStoredTasks])
+  }, [filteredTasks, storedTasks, setStoredTasks])
+
+  // Save filter whenever it changes
+  useEffect(() => {
+    saveFilter(filter)
+    setStoredFilter(filter)
+  }, [filter, setStoredFilter])
 
   const handleAddTask = (text: string, priority?: Task['priority']) => {
     addTask(text, priority)
+  }
+
+  const handleFilterChange = (newFilter: TaskFilter) => {
+    setFilter(newFilter)
   }
 
   const handleDismissError = () => {
@@ -63,16 +83,19 @@ export default function TodoApp() {
           </button>
         </div>
 
+        {/* Filter tabs */}
+        <FilterTabs currentFilter={filter} onFilterChange={handleFilterChange} />
+
         {/* Task input */}
         <TodoInput onAddTask={handleAddTask} />
 
         {/* Task list */}
-        <TodoList tasks={tasks} onToggle={toggleTask} onDelete={deleteTask} />
+        <TodoList tasks={filteredTasks} onToggle={toggleTask} onDelete={deleteTask} />
 
         {/* Footer with stats */}
-        {tasks.length > 0 && (
+        {activeCount + completedCount > 0 && (
           <div className="text-center text-sm text-slate-500 dark:text-slate-400">
-            {tasks.filter((t) => !t.isCompleted).length} active, {tasks.filter((t) => t.isCompleted).length} completed
+            {activeCount} active, {completedCount} completed
           </div>
         )}
       </div>

@@ -1,9 +1,12 @@
 // useTodos hook - manages task state with CRUD operations
-import { useState, useCallback } from 'react'
-import type { Task } from '@/lib/types'
+import { useState, useCallback, useMemo } from 'react'
+import type { Task, TaskFilter } from '@/lib/types'
 
 interface UseTodosReturn {
   tasks: Task[]
+  filteredTasks: Task[]
+  filter: TaskFilter
+  setFilter: (filter: TaskFilter) => void
   addTask: (text: string, priority?: Task['priority']) => void
   toggleTask: (id: string) => void
   deleteTask: (id: string) => void
@@ -12,8 +15,9 @@ interface UseTodosReturn {
   activeCount: number
 }
 
-export function useTodos(initialTasks: Task[] = []): UseTodosReturn {
+export function useTodos(initialTasks: Task[] = [], initialFilter: TaskFilter = 'all'): UseTodosReturn {
   const [tasks, setTasks] = useState<Task[]>(initialTasks)
+  const [filter, setFilter] = useState<TaskFilter>(initialFilter)
 
   const addTask = useCallback((text: string, priority: Task['priority'] = 'medium') => {
     const newTask: Task = {
@@ -47,8 +51,22 @@ export function useTodos(initialTasks: Task[] = []): UseTodosReturn {
   const completedCount = tasks.filter((t) => t.isCompleted).length
   const activeCount = tasks.filter((t) => !t.isCompleted).length
 
+  const filteredTasks = useMemo(() => {
+    switch (filter) {
+      case 'active':
+        return tasks.filter((t) => !t.isCompleted)
+      case 'completed':
+        return tasks.filter((t) => t.isCompleted)
+      default:
+        return tasks
+    }
+  }, [tasks, filter])
+
   return {
     tasks,
+    filteredTasks,
+    filter,
+    setFilter,
     addTask,
     toggleTask,
     deleteTask,
