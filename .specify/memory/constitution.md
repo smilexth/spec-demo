@@ -1,7 +1,9 @@
 <!--
 Sync Impact Report:
-- Version change: [none] → 1.0.0 (initial ratification)
-- Added sections: All 5 principles, Technology Standards, Development Workflow, Governance
+- Version change: 1.0.0 → 1.1.0 (MINOR - new principle added)
+- Modified principles: None
+- Added principles: VI. Atomic Commits
+- Removed sections: None
 - Templates requiring updates:
   - ✅ .specify/templates/plan-template.md (Constitution Check section aligns)
   - ✅ .specify/templates/spec-template.md (requirements structure compatible)
@@ -45,6 +47,12 @@ Features MUST be implemented using the simplest solution that meets requirements
 
 **Rationale**: A to-do app should remain maintainable as it grows. Premature complexity creates technical debt that slows development. Simple code is easier to debug, modify, and extend.
 
+### VI. Atomic Commits
+
+All work MUST be committed before moving to edit another file or start a new task. Commits MUST be atomic—each commit represents a single, complete unit of work that can be understood and reverted independently. Staged changes MUST NOT remain uncommitted when context-switching to different files or tasks.
+
+**Rationale**: Atomic commits create a clean, revertible history. They prevent lost work when context-switching and make debugging easier by isolating changes to single, meaningful units.
+
 ## Technology Standards
 
 ### Mandatory Technology Stack
@@ -77,6 +85,7 @@ Features MUST be implemented using the simplest solution that meets requirements
 - Feature branches MUST follow naming convention: `[###-feature-name]`
 - Commits MUST be atomic and follow conventional commit format
 - Pull requests MUST reference related issues or specifications
+- **CRITICAL**: Work MUST be committed before editing a different file or starting a new task
 
 ### Testing Philosophy
 
@@ -98,4 +107,4 @@ Amendments require:
 
 All specifications, plans, and tasks MUST pass a constitution check before implementation begins. Any violation of core principles MUST be explicitly justified in the plan with a simpler alternative considered and rejected.
 
-**Version**: 1.0.0 | **Ratified**: 2026-02-01 | **Last Amended**: 2026-02-01
+**Version**: 1.1.0 | **Ratified**: 2026-02-01 | **Last Amended**: 2026-02-01
