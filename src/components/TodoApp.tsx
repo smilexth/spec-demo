@@ -27,7 +27,7 @@ export default function TodoApp() {
   const storedFilter = useLocalStorage<TaskFilter>('focusflow-filter', initialFilter)
 
   // Todo state management
-  const { filteredTasks, filter, setFilter, addTask, toggleTask, deleteTask, activeCount, completedCount } = useTodos(
+  const { filteredTasks, filter, setFilter, addTask, toggleTask, deleteTask, updatePriority, activeCount, completedCount } = useTodos(
     storedTasks[0],
     storedFilter[0]
   )
@@ -90,7 +90,12 @@ export default function TodoApp() {
         <TodoInput onAddTask={handleAddTask} />
 
         {/* Task list */}
-        <TodoList tasks={filteredTasks} onToggle={toggleTask} onDelete={deleteTask} />
+        <TodoList
+          tasks={filteredTasks}
+          onToggle={toggleTask}
+          onDelete={deleteTask}
+          onUpdatePriority={updatePriority}
+        />
 
         {/* Footer with stats */}
         {activeCount + completedCount > 0 && (

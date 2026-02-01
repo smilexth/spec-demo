@@ -11,6 +11,7 @@ interface UseTodosReturn {
   toggleTask: (id: string) => void
   deleteTask: (id: string) => void
   updateTask: (id: string, updates: Partial<Omit<Task, 'id' | 'createdAt'>>) => void
+  updatePriority: (id: string, priority: Task['priority']) => void
   completedCount: number
   activeCount: number
 }
@@ -48,6 +49,12 @@ export function useTodos(initialTasks: Task[] = [], initialFilter: TaskFilter = 
     )
   }, [])
 
+  const updatePriority = useCallback((id: string, priority: Task['priority']) => {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === id ? { ...task, priority } : task))
+    )
+  }, [])
+
   const completedCount = tasks.filter((t) => t.isCompleted).length
   const activeCount = tasks.filter((t) => !t.isCompleted).length
 
@@ -71,6 +78,7 @@ export function useTodos(initialTasks: Task[] = [], initialFilter: TaskFilter = 
     toggleTask,
     deleteTask,
     updateTask,
+    updatePriority,
     completedCount,
     activeCount,
   }

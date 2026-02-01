@@ -1,13 +1,14 @@
-import type { Task } from '@/lib/types'
+import type { Task, TaskPriority } from '@/lib/types'
 import TodoItem from './TodoItem'
 
 interface TodoListProps {
   tasks: Task[]
   onToggle: (id: string) => void
   onDelete: (id: string) => void
+  onUpdatePriority: (id: string, priority: TaskPriority) => void
 }
 
-export default function TodoList({ tasks, onToggle, onDelete }: TodoListProps) {
+export default function TodoList({ tasks, onToggle, onDelete, onUpdatePriority }: TodoListProps) {
   if (tasks.length === 0) {
     return (
       <div className="text-center py-12">
@@ -20,7 +21,12 @@ export default function TodoList({ tasks, onToggle, onDelete }: TodoListProps) {
     <ul className="space-y-2">
       {tasks.map((task) => (
         <li key={task.id}>
-          <TodoItem task={task} onToggle={onToggle} onDelete={onDelete} />
+          <TodoItem
+            task={task}
+            onToggle={onToggle}
+            onDelete={onDelete}
+            onUpdatePriority={onUpdatePriority}
+          />
         </li>
       ))}
     </ul>

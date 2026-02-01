@@ -1,17 +1,50 @@
+import { useState, KeyboardEvent } from 'react'
 import { Trash2 } from 'lucide-react'
-import type { Task } from '@/lib/types'
+import type { Task, TaskPriority } from '@/lib/types'
 
 interface TodoItemProps {
   task: Task
   onToggle: (id: string) => void
   onDelete: (id: string) => void
+  onUpdatePriority: (id: string, priority: TaskPriority) => void
 }
 
-export default function TodoItem({ task, onToggle, onDelete }: TodoItemProps) {
+const PRIORITIES: { value: TaskPriority; label: string }[] = [
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+]
+
+export default function TodoItem({ task, onToggle, onDelete, onUpdatePriority }: TodoItemProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
   const priorityColors = {
     low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
     high: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  }
+
+  const handlePriorityChange = (priority: TaskPriority) => {
+    onUpdatePriority(task.id, priority)
+    setIsOpen(false)
+  }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false)
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      setIsOpen(!isOpen)
+    } else if (isOpen) {
+      const currentIndex = PRIORITIES.findIndex((p) => p.value === task.priority)
+      if (e.key === 'ArrowDown') {
+        const nextIndex = (currentIndex + 1) % PRIORITIES.length
+        handlePriorityChange(PRIORITIES[nextIndex].value)
+      } else if (e.key === 'ArrowUp') {
+        const prevIndex = (currentIndex - 1 + PRIORITIES.length) % PRIORITIES.length
+        handlePriorityChange(PRIORITIES[prevIndex].value)
+      }
+    }
   }
 
   return (
@@ -32,9 +65,45 @@ export default function TodoItem({ task, onToggle, onDelete }: TodoItemProps) {
         <div className={`task-text text-sm sm:text-base ${task.isCompleted ? 'completed' : ''}`}>
           {task.text}
         </div>
-        <span className={`text-xs px-2 py-0.5 rounded-full ${priorityColors[task.priority]}`}>
-          {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-        </span>
+
+        {/* Priority selector dropdown */}
+        <div className="relative inline-block">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            onKeyDown={handleKeyDown}
+            className={`text-xs px-2 py-0.5 rounded-full ${priorityColors[task.priority]} hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            aria-label={`Change priority, currently ${task.priority}`}
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+          >
+            {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+          </button>
+
+          {isOpen && (
+            <ul
+              className="absolute z-10 mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 py-1 min-w-[100px]"
+              role="listbox"
+              aria-label="Select priority"
+            >
+              {PRIORITIES.map((priority) => (
+                <li key={priority.value}>
+                  <button
+                    onClick={() => handlePriorityChange(priority.value)}
+                    className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ${
+                      priority.value === task.priority
+                        ? 'bg-slate-100 dark:bg-slate-700 font-medium'
+                        : ''
+                    }`}
+                    role="option"
+                    aria-selected={priority.value === task.priority}
+                  >
+                    {priority.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
       <button
