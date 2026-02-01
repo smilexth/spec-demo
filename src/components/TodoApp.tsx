@@ -5,6 +5,7 @@ import { useTheme } from './App'
 import TodoInput from './TodoInput'
 import TodoList from './TodoList'
 import FilterTabs from './FilterTabs'
+import BulkActions from './BulkActions'
 import ErrorToast from './ErrorToast'
 import { saveTasks, getFilter, saveFilter } from '@/lib/storage'
 import type { Task, TaskFilter } from '@/lib/types'
@@ -27,10 +28,20 @@ export default function TodoApp() {
   const storedFilter = useLocalStorage<TaskFilter>('focusflow-filter', initialFilter)
 
   // Todo state management
-  const { filteredTasks, filter, setFilter, addTask, toggleTask, deleteTask, updatePriority, activeCount, completedCount } = useTodos(
-    storedTasks[0],
-    storedFilter[0]
-  )
+  const {
+    filteredTasks,
+    filter,
+    setFilter,
+    addTask,
+    toggleTask,
+    deleteTask,
+    updatePriority,
+    toggleAll,
+    clearCompleted,
+    allCompleted,
+    activeCount,
+    completedCount,
+  } = useTodos(storedTasks[0], storedFilter[0])
 
   // Auto-save tasks to localStorage when they change
   const [, setStoredTasks] = useLocalStorage<Task[]>('focusflow-tasks', filteredTasks)
@@ -88,6 +99,15 @@ export default function TodoApp() {
 
         {/* Task input */}
         <TodoInput onAddTask={handleAddTask} />
+
+        {/* Bulk actions */}
+        <BulkActions
+          activeCount={activeCount}
+          completedCount={completedCount}
+          allCompleted={allCompleted}
+          onToggleAll={toggleAll}
+          onClearCompleted={clearCompleted}
+        />
 
         {/* Task list */}
         <TodoList

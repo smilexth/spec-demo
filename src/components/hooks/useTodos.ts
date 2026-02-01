@@ -12,6 +12,9 @@ interface UseTodosReturn {
   deleteTask: (id: string) => void
   updateTask: (id: string, updates: Partial<Omit<Task, 'id' | 'createdAt'>>) => void
   updatePriority: (id: string, priority: Task['priority']) => void
+  toggleAll: () => void
+  clearCompleted: () => void
+  allCompleted: boolean
   completedCount: number
   activeCount: number
 }
@@ -55,8 +58,20 @@ export function useTodos(initialTasks: Task[] = [], initialFilter: TaskFilter = 
     )
   }, [])
 
+  const toggleAll = useCallback(() => {
+    setTasks((prev) => {
+      const allCompleted = prev.every((t) => t.isCompleted)
+      return prev.map((task) => ({ ...task, isCompleted: !allCompleted }))
+    })
+  }, [])
+
+  const clearCompleted = useCallback(() => {
+    setTasks((prev) => prev.filter((task) => !task.isCompleted))
+  }, [])
+
   const completedCount = tasks.filter((t) => t.isCompleted).length
   const activeCount = tasks.filter((t) => !t.isCompleted).length
+  const allCompleted = tasks.length > 0 && completedCount === tasks.length
 
   const filteredTasks = useMemo(() => {
     switch (filter) {
@@ -79,6 +94,9 @@ export function useTodos(initialTasks: Task[] = [], initialFilter: TaskFilter = 
     deleteTask,
     updateTask,
     updatePriority,
+    toggleAll,
+    clearCompleted,
+    allCompleted,
     completedCount,
     activeCount,
   }
