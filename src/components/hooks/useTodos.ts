@@ -1,6 +1,6 @@
 // useTodos hook - manages task state with CRUD operations
 import { useState, useCallback } from 'react'
-import type { Task } from '../lib/types'
+import type { Task } from '../../lib/types'
 
 interface UseTodosReturn {
   tasks: Task[]

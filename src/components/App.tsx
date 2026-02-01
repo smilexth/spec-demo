@@ -1,6 +1,6 @@
 // App root component with ThemeContext provider
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import type { Theme } from '../lib/types'
+import type { Theme } from '../../lib/types'
 
 type ThemeContextType = {
   theme: Theme

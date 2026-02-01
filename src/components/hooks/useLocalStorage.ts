@@ -1,5 +1,5 @@
 // useLocalStorage hook for automatic state synchronization
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 export function useLocalStorage<T>(
   key: string,
