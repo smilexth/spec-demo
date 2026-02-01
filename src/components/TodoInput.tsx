@@ -1,5 +1,5 @@
 import { useState, useCallback, KeyboardEvent } from 'react'
-import type { TaskPriority } from '../lib/types'
+import type { TaskPriority } from '@/lib/types'
 import { Check } from 'lucide-react'
 
 interface TodoInputProps {

@@ -1,6 +1,6 @@
 // App root component with ThemeContext provider
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import type { Theme } from '../../lib/types'
+import type { Theme } from '@/lib/types'
 
 type ThemeContextType = {
   theme: Theme
@@ -65,7 +65,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   }, [theme])
 
   const toggleTheme = () => {
-    setThemeState((prev) => {
+    setThemeState((prev: Theme) => {
       const next = prev === 'light' ? 'dark' : 'light'
       localStorage.setItem('focusflow-theme', next)
       return next

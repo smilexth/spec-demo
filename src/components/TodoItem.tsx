@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react'
-import type { Task } from '../lib/types'
+import type { Task } from '@/lib/types'
 
 interface TodoItemProps {
   task: Task

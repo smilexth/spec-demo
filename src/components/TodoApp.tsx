@@ -3,7 +3,7 @@ import { useLocalStorage } from './hooks/useLocalStorage'
 import { useTheme } from './App'
 import TodoInput from './TodoInput'
 import TodoList from './TodoList'
-import type { Task } from '../../lib/types'
+import type { Task } from '@/lib/types'
 
 export default function TodoApp() {
   // Load tasks from localStorage on mount
